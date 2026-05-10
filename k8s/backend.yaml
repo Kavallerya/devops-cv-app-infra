@@ -46,8 +46,8 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: password
+                  name: db-credentials   # Має збігатися з target.name з файлу вище
+                  key: DB_PASSWORD       # Має збігатися з secretKey з файлу вище
             - name: DB_NAME
               value: "cv_db"
             # BEST PRACTICE: Динамічне формування URL прямо в K8s
