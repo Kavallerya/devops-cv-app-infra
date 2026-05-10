@@ -1,0 +1,73 @@
+---
+# 1. СТВОРЮЄМО SERVICE (Внутрішню мережеву адресу для бекенду)
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend # За цією адресою фронтенд буде звертатися до бекенду
+spec:
+  selector:
+    app: backend # Сервіс шукатиме Поди з такою міткою
+  ports:
+    - protocol: TCP
+      port: 8000       # Порт самого Сервісу
+      targetPort: 8000 # Порт всередині Docker-контейнера
+
+---
+# 2. СТВОРЮЄМО DEPLOYMENT (Менеджер Подів)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1 # BEST PRACTICE: Запускаємо 2 копії для High Availability (відмовостійкості)!
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend # Мітка для зв'язку з Service
+    spec:
+      containers:
+        - name: backend
+          # ВАЖЛИВО: Замініть "ваш_логін" на ваш логін у DockerHub!
+          image: kavallerya/cv-backend:0e5db85b
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"     # 10% ядра процесора
+              memory: "128Mi" # 128 Мегабайт пам'яті
+          
+          # Передаємо змінні середовища
+          env:
+            - name: DB_USER
+              value: "admin"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+            - name: DB_NAME
+              value: "cv_db"
+            # BEST PRACTICE: Динамічне формування URL прямо в K8s
+            - name: DATABASE_URL
+              value: "postgresql+asyncpg://$(DB_USER):$(DB_PASSWORD)@db:5432/$(DB_NAME)"
+            - name: ALLOWED_ORIGINS
+              value: "*" # Поки що дозволяємо все для тестування
+
+          # Liveness Probe (Перевірка, чи не завис додаток)
+          livenessProbe:
+            httpGet:
+              path: /health # Ваш ендпоінт для перевірки з коду
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          # Readiness Probe (Перевірка, чи готовий обробляти запити)
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10

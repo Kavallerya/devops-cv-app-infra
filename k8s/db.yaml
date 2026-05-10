@@ -1,0 +1,74 @@
+---
+# 1. Створюємо ДИСК на 5 ГБ (аналог volumes: postgres_data)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# 2. Створюємо МЕРЕЖЕВЕ ІМ'Я (аналог hostname: db)
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+# 3. Створюємо сам КОНТЕЙНЕР бази даних (аналог service: db)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_DB
+              value: "cv_db"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: # Ось тут магія безпеки! Беремо пароль з Secret
+                  name: db-secret
+                  key: password
+            - name: PGDATA
+              value: "var/lib/postgres/data/pgdata"
+          resources:
+            requests:
+              cpu: "50m"     # 15% ядра
+              memory: "128Mi"
+
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data/
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc

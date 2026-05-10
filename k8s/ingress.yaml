@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cv-ingress
+  annotations:
+    # Кажемо Google Cloud створити класичний балансувальник
+    kubernetes.io/ingress.class: "gce"
+spec:
+  defaultBackend:
+    service:
+      name: frontend # Весь невідомий трафік (тобто все) йде на фронтенд
+      port:
+        number: 80
