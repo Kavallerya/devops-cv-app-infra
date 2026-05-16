@@ -31,7 +31,7 @@ spec:
       containers:
         - name: frontend
           # ВАЖЛИВО: Замініть на свій логін у DockerHub!
-          image: kavallerya/cv-frontend:39494472
+          image: kavallerya/cv-frontend:7eb3d92d
           ports:
             - containerPort: 80
           resources:
