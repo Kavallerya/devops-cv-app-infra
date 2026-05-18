@@ -5,7 +5,7 @@ resource "google_compute_network" "vpc_network" {
 
 resource "google_container_cluster" "primary" {
   name     = "cv-cluster"
-  location = "europe-central2"
+  location = "europe-central2-a"
   network  = google_compute_network.vpc_network.name
 
   enable_autopilot   = false
