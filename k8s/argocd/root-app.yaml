@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-application
+  namespace: argocd
+  finalizers:
+    - argocd.argoproj.io/resources-finalizer
+    
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/kavallerya/devops-cv-app-infra.git' 
+    targetRevision: HEAD
+    path: k8s # Шлях до папки, де лежать підпапки з маніфестами
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

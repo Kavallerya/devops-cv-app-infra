@@ -1,4 +1,39 @@
-.terraform/
+# Terraform
+**/.terraform/
 *.tfstate
 *.tfstate.*
 *.tfplan
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# Kubernetes (секреты и сгенерированные файлы)
+*.secret.yaml
+*.secrets.yaml
+**/secrets.yaml
+kubeconfig
+*.kubeconfig
+
+# Общие временные файлы
+*.swp
+*.swo
+*~
+.DS_Store
+*.bak
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Локальные скрипты и данные
+*.log
+*.key
+*.pem
