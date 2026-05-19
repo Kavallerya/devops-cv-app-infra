@@ -11,11 +11,22 @@ resource "google_container_cluster" "primary" {
   enable_autopilot   = false
   initial_node_count = 2 
 
+
+workload_identity_config {
+    workload_pool = "cv-k8s-prod.svc.id.goog"
+  }
+
+
   node_config {
     machine_type = "e2-standard-4" 
     disk_size_gb = 30              
     disk_type    = "pd-standard"   
     oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+  
+  workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+  
   }
   deletion_protection = false
 }
