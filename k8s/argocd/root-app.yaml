@@ -12,6 +12,8 @@ spec:
     repoURL: 'https://github.com/kavallerya/devops-cv-app-infra.git' 
     targetRevision: HEAD
     path: k8s # Шлях до папки, де лежать підпапки з маніфестами
+    directory:
+      recurse: true
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
