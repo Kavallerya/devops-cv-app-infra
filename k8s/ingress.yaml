@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: cv-ingress
   annotations:
+    argocd.argoproj.io/sync-wave: "5"
     # Кажемо Google Cloud створити класичний балансувальник
     kubernetes.io/ingress.class: "gce"
 spec:
