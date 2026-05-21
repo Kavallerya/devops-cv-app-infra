@@ -25,7 +25,7 @@ workload_identity_config {
   
   workload_metadata_config {
       mode = "GKE_METADATA"
-    }
+    } 
   
   }
   deletion_protection = false
