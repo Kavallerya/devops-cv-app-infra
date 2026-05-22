@@ -57,7 +57,7 @@ spec:
               valueFrom:
                 secretKeyRef: # Ось тут магія безпеки! Беремо пароль з Secret
                   name: db-secret
-                  key: password
+                  key: database_password
             - name: PGDATA
               value: "var/lib/postgres/data/pgdata"
           resources:
