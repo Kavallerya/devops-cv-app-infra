@@ -1,4 +1,10 @@
 terraform {
+
+  backend "gcs" {
+    bucket  = "imorozov-terraform-state" # Назва бакету з Кроку 1
+    prefix  = "terraform/state"          # Папка всередині бакету
+  }
+
   required_providers {
     google = { source = "hashicorp/google", version = "~> 5.0" }
     kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0" }
