@@ -54,10 +54,11 @@ spec:
           hosts:
             - host: auth.imorozov.xyz
               paths:
-                - path: /*
+                - path: /
                   pathType: ImplementationSpecific
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            kubernetes.io/ingress.class: "gce"
           tls:
             - secretName: dex-tls-secret
               hosts:
