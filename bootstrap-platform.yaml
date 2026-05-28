@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-bootstrap # Головний наглядач за платформою
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Kavallerya/devops-cv-app-infra'
+    path: argocd-config # Вказуємо папку з системними додатками
+    targetRevision: HEAD
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
