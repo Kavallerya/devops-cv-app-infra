@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dex
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://charts.dexidp.io' # Офіційний репозиторій Helm-чартів Dex
+    chart: dex
+    targetRevision: 0.19.1 # Стабільна версія чарту
+    helm:
+      valuesObject:
+        # Підключаємо наші секрети з Етапу 3 як змінні оточення для пода Dex
+        envFrom:
+          - secretRef:
+              name: dex-env-secrets
+
+        config:
+          # Головна адреса нашого сервера авторизації
+          issuer: https://auth.imorozov.xyz
+          
+          # ЕКОНОМІЯ РЕСУРСІВ: кажемо Dex використовувати сам Kubernetes як базу даних
+          storage:
+            type: kubernetes
+            config:
+              inCluster: true
+
+          # Налаштовуємо міст (Connector) із GitHub
+          connectors:
+            - type: github
+              id: github
+              name: GitHub
+              config:
+                # Змінні підставляться автоматично з нашого ExternalSecret
+                clientID: $GITHUB_CLIENT_ID
+                clientSecret: $GITHUB_CLIENT_SECRET
+                redirectURI: https://auth.imorozov.xyz/callback
+
+          # Реєструємо Grafana як офіційного клієнта, якому Dex дозволяє логінитися
+          staticClients:
+            - id: grafana
+              name: 'Grafana Dashboard'
+              # Адреса, куди Dex поверне користувача вже всередині Графани
+              redirectURIs:
+                - https://monitor.imorozov.xyz/login/generic_oauth
+              # Секретний ключ довіри, взятий зі змінних оточення
+              secret: $GRAFANA_SHARED_SECRET
+
+        # Автоматично створюємо Ingress для Dex, щоб він був доступний в інтернеті
+        ingress:
+          enabled: true
+          className: "gce"
+          hosts:
+            - host: auth.imorozov.xyz
+              paths:
+                - path: /*
+                  pathType: ImplementationSpecific
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          tls:
+            - secretName: dex-tls-secret
+              hosts:
+                - auth.imorozov.xyz
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: dex
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
