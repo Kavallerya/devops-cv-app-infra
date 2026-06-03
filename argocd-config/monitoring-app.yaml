@@ -13,6 +13,18 @@ spec:
       # Замість parameters використовуємо valuesObject для складної конфігурації
       valuesObject:
         grafana:
+          ingress:
+            enabled: true
+            ingressClassName: "gce"
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              kubernetes.io/ingress.class: "gce"
+            hosts:
+              - monitor.imorozov.xyz
+            tls:
+              - secretName: grafana-tls-secret
+                hosts:
+                  - monitor.imorozov.xyz
           # 1. Прокидаємо секрет з K8s як змінну оточення в под Графани
           env:
             GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:

@@ -54,7 +54,7 @@ spec:
           hosts:
             - host: auth.imorozov.xyz
               paths:
-                - path: /
+                - path: /*
                   pathType: ImplementationSpecific
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
