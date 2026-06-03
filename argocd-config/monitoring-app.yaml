@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    chart: kube-prometheus-stack
+    targetRevision: 58.2.2
+    helm:
+      # Замість parameters використовуємо valuesObject для складної конфігурації
+      valuesObject:
+        grafana:
+          # 1. Прокидаємо секрет з K8s як змінну оточення в под Графани
+          env:
+            GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-dex-client-secret
+                  key: dex-client-secret
+          
+          # 2. Налаштовуємо саму Графану
+          grafana.ini:
+            server:
+              root_url: https://monitor.imorozov.xyz # Важливо для колбеків
+            auth.generic_oauth:
+              enabled: true
+              name: "GitHub (via Dex)"
+              allow_sign_up: true
+              client_id: grafana
+              # Графана візьме секрет зі змінної оточення, яку ми прокинули вище
+              client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+              scopes: "openid profile email"
+              auth_url: "https://auth.imorozov.xyz/auth"
+              token_url: "https://auth.imorozov.xyz/token"
+              api_url: "https://auth.imorozov.xyz/userinfo"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
