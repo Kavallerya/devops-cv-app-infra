@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    chart: ingress-nginx
+    targetRevision: 4.10.1 # Стабільна версія
+    helm:
+      valuesObject:
+        controller:
+          # Вказуємо, що це буде публічний балансувальник
+          service:
+            type: LoadBalancer
+            annotations:
+              # Просимо Google створити швидкий L4 Network Load Balancer
+              cloud.google.com/l4-ilb: "false" 
+          # Nginx сам збиратиме свої метрики для Графани
+          metrics:
+            enabled: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ingress-nginx
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -4,22 +4,24 @@ metadata:
   name: cv-ingress
   annotations:
     argocd.argoproj.io/sync-wave: "5"
-    # Кажемо Google Cloud створити класичний балансувальник
-    kubernetes.io/ingress.class: "gce"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Використовуємо сертифікат від Let's Encrypt
-  
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" 
+    # Анотацію gce ми видалили!
 spec:
+  # Кажемо Кубернетесу віддати цей Ingress контролеру Nginx
+  ingressClassName: nginx 
   tls:
   - hosts:
     - imorozov.xyz
     - api.imorozov.xyz
-    secretName: cv-tls-secret # Ім'я секрету для TLS
+    secretName: cv-tls-secret
   rules:
   - host: imorozov.xyz
     http:
       paths:
-      - path: /*
-        pathType: ImplementationSpecific
+      # Змінюємо /* на /
+      - path: /
+        # Змінюємо ImplementationSpecific на Prefix
+        pathType: Prefix
         backend:
           service:
             name: frontend
@@ -28,8 +30,10 @@ spec:
   - host: api.imorozov.xyz
     http:
       paths:
-        - path: /*
-          pathType: ImplementationSpecific
+        # Змінюємо /* на /
+        - path: /
+          # Змінюємо ImplementationSpecific на Prefix
+          pathType: Prefix
           backend:
             service:
               name: backend

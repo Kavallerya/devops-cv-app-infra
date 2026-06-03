@@ -50,7 +50,7 @@ spec:
         # Автоматично створюємо Ingress для Dex, щоб він був доступний в інтернеті
         ingress:
           enabled: true
-          className: "gce"
+          className: "nginx" # Вказуємо, що це буде оброблятися нашим Nginx Ingress Controller
           hosts:
             - host: auth.imorozov.xyz
               paths:
@@ -58,7 +58,6 @@ spec:
                   pathType: ImplementationSpecific
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
-            kubernetes.io/ingress.class: "gce"
           tls:
             - secretName: dex-tls-secret
               hosts:
