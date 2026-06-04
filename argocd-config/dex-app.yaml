@@ -45,7 +45,7 @@ spec:
               redirectURIs:
                 - https://monitor.imorozov.xyz/login/generic_oauth
               # Секретний ключ довіри, взятий зі змінних оточення
-              secret: $GRAFANA_SHARED_SECRET
+              secretEnv: GRAFANA_SHARED_SECRET
 
         # Автоматично створюємо Ingress для Dex, щоб він був доступний в інтернеті
         ingress:
