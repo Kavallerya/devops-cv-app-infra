@@ -47,6 +47,9 @@ spec:
               auth_url: "https://auth.imorozov.xyz/auth"
               token_url: "https://auth.imorozov.xyz/token"
               api_url: "https://auth.imorozov.xyz/userinfo"
+              allow_assign_grafana_admin: true # Дозволяємо призначати ролі через Dex
+
+              role_attribute_path: "contains(groups, 'imorozov-infra:devops') && 'Admin' || 'Viewer'" # Призначаємо роль на основі групи в GitHub
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring

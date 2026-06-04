@@ -36,6 +36,11 @@ spec:
                 clientID: $GITHUB_CLIENT_ID
                 clientSecret: $GITHUB_CLIENT_SECRET
                 redirectURI: https://auth.imorozov.xyz/callback
+                orgs:
+                  - name: imorozov-infra
+                    teams:
+                      - devops
+                        # Вкажіть вашу організацію на GitHub, якщо хочете обмежити доступ
 
           # Реєструємо Grafana як офіційного клієнта, якому Dex дозволяє логінитися
           staticClients:
