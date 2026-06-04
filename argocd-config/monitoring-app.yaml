@@ -26,12 +26,11 @@ spec:
                 hosts:
                   - monitor.imorozov.xyz
           # 1. Прокидаємо секрет з K8s як змінну оточення в под Графани
-          env:
+          envValueFrom:
             GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-              valueFrom:
-                secretKeyRef:
-                  name: grafana-dex-client-secret
-                  key: dex-client-secret
+              secretKeyRef:
+                name: grafana-dex-client-secret
+                key: dex-client-secret
           
           # 2. Налаштовуємо саму Графану
           grafana.ini:
