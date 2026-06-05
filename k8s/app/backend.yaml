@@ -4,6 +4,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend # За цією адресою фронтенд буде звертатися до бекенду
+  labels:
+    app: backend
 spec:
   selector:
     app: backend # Сервіс шукатиме Поди з такою міткою
