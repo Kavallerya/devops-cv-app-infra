@@ -2,16 +2,19 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: backend-monitor
-  namespace: default # Там, де живе твій бекенд
+  namespace: monitoring # <--- 1. ПЕРЕНОСИМО В НЕЙМСПЕЙС ПРОМЕТЕУСА
   labels:
-    # КРИТИЧНО: Ця мітка каже Helm-чарту Prometheus, що цей монітор треба взяти в роботу
-    release: monitoring 
+    release: monitoring
 spec:
+  # --- 2. ДОДАЄМО ВКАЗІВНИК НА НЕЙМСПЕЙС ДОДАТКА ---
+  namespaceSelector:
+    matchNames:
+      - default 
+  # ------------------------------------------------
   selector:
     matchLabels:
-      app: backend # Має чітко збігатися з міткою (labels) у Service вашого бекенду
+      app: backend
   endpoints:
-    - port: http # Назва порту, яку ми щойно прописали в Service бекенду
-      interval: 15s # Як часто Прометеус буде смикати додаток
-      # Оскільки твій роутер підключено з префіксом /api, шлях до метрик буде саме таким:
+    - port: http
+      interval: 15s
       path: /api/metrics
