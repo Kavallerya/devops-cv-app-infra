@@ -47,7 +47,7 @@ spec:
               client_id: grafana
               # Графана візьме секрет зі змінної оточення, яку ми прокинули вище
               client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
-              scopes: "openid profile email"
+              scopes: "openid profile email groups"
               # Front-channel залишаємо зовнішнім (для браузера)
               auth_url: "https://auth.imorozov.xyz/auth"
               # Back-channel переводимо у внутрішню мережу K8s (без SSL, напряму)
@@ -55,7 +55,7 @@ spec:
               api_url: "http://dex.dex.svc.cluster.local:5556/userinfo"
               allow_assign_grafana_admin: true # Дозволяємо призначати ролі через Dex
 
-              role_attribute_path: "contains(groups, 'imorozov-infra:devops') && 'Admin' || 'Viewer'" # Призначаємо роль на основі групи в GitHub
+              role_attribute_path: "contains(groups[*], 'imorozov-infra:devops') && 'Admin' || 'Viewer'" # Призначаємо роль на основі групи в GitHub
           
   destination:
     server: 'https://kubernetes.default.svc'
