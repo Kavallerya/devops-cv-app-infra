@@ -10,7 +10,8 @@ spec:
   ports:
     - protocol: TCP
       port: 8000       # Порт самого Сервісу
-      targetPort: 8000 # Порт всередині Docker-контейнера
+      targetPort: 8000
+      name: http    # Порт всередині Docker-контейнера
 
 ---
 # 2. СТВОРЮЄМО DEPLOYMENT (Менеджер Подів)
