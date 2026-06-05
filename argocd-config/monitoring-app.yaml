@@ -16,7 +16,6 @@ spec:
           enabled: false # Вимикаємо CoreDNS, бо він вже є в кластері
           kubedns:
             enabled: false # Вимикаємо KubeDNS, бо він вже є в кластері
-            
         grafana:
           ingress:
             enabled: true
@@ -49,9 +48,11 @@ spec:
               # Графана візьме секрет зі змінної оточення, яку ми прокинули вище
               client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
               scopes: "openid profile email"
+              # Front-channel залишаємо зовнішнім (для браузера)
               auth_url: "https://auth.imorozov.xyz/auth"
-              token_url: "https://auth.imorozov.xyz/token"
-              api_url: "https://auth.imorozov.xyz/userinfo"
+              # Back-channel переводимо у внутрішню мережу K8s (без SSL, напряму)
+              token_url: "http://dex.dex.svc.cluster.local:5556/token"
+              api_url: "http://dex.dex.svc.cluster.local:5556/userinfo"
               allow_assign_grafana_admin: true # Дозволяємо призначати ролі через Dex
 
               role_attribute_path: "contains(groups, 'imorozov-infra:devops') && 'Admin' || 'Viewer'" # Призначаємо роль на основі групи в GitHub
