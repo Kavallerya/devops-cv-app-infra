@@ -12,10 +12,10 @@ spec:
     helm:
       # Замість parameters використовуємо valuesObject для складної конфігурації
       valuesObject:
-        coredns:
+        coreDns:
           enabled: false # Вимикаємо CoreDNS, бо він вже є в кластері
-          kubedns:
-            enabled: false # Вимикаємо KubeDNS, бо він вже є в кластері
+        kubeDns:
+          enabled: false # Вимикаємо KubeDNS, бо він вже є в кластері
         grafana:
           ingress:
             enabled: true
