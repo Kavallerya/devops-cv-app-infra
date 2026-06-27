@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cv-api-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  cv-api.json: |
+    {
+      "title": "CV API Dashboard",
+      "uid": "cv-api-dashboard",
+      "schemaVersion": 38,
+      "version": 1,
+      "refresh": "30s",
+      "time": { "from": "now-1h", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Total API Requests",
+          "type": "stat",
+          "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(cv_api_requests_total)",
+              "legendFormat": "Total"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Unique Visitors",
+          "type": "stat",
+          "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+          "targets": [
+            {
+              "expr": "cv_visitors_total",
+              "legendFormat": "Visitors"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Request Rate by Endpoint (req/s)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "rate(cv_api_requests_total[5m])",
+              "legendFormat": "{{endpoint}} [{{method}}]"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "P95 Request Latency (s)",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, rate(cv_api_request_duration_seconds_bucket[5m]))",
+              "legendFormat": "p95 {{endpoint}}"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Error Rate (non-2xx)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(cv_api_requests_total{status_code!~\"2..\"}[5m])) / sum(rate(cv_api_requests_total[5m]))",
+              "legendFormat": "Error rate"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Requests by Status Code",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (status_code) (rate(cv_api_requests_total[5m]))",
+              "legendFormat": "{{status_code}}"
+            }
+          ]
+        }
+      ]
+    }
