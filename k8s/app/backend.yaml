@@ -34,7 +34,7 @@ spec:
       containers:
         - name: backend
           # ВАЖЛИВО: Замініть "ваш_логін" на ваш логін у DockerHub!
-          image: kavallerya/cv-backend:6c56dcf0
+          image: kavallerya/cv-backend:d09b0ee9
           ports:
             - containerPort: 8000
           resources:
