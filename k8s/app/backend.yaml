@@ -22,7 +22,12 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: 1 # BEST PRACTICE: Запускаємо 2 копії для High Availability (відмовостійкості)!
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: backend
@@ -31,6 +36,7 @@ spec:
       labels:
         app: backend # Мітка для зв'язку з Service
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - name: backend
           # ВАЖЛИВО: Замініть "ваш_логін" на ваш логін у DockerHub!
@@ -39,8 +45,8 @@ spec:
             - containerPort: 8000
           resources:
             requests:
-              cpu: "100m"     # 10% ядра процесора
-              memory: "128Mi" # 128 Мегабайт пам'яті
+              cpu: "50m"
+              memory: "64Mi"
             limits:
               cpu: "500m"
               memory: "512Mi"
@@ -61,6 +67,11 @@ spec:
             - name: ALLOWED_ORIGINS
               value: "*" # Поки що дозволяємо все для тестування
 
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+
           # Liveness Probe (Перевірка, чи не завис додаток)
           livenessProbe:
             httpGet:
@@ -68,6 +79,7 @@ spec:
               port: 8000
             initialDelaySeconds: 15
             periodSeconds: 20
+            failureThreshold: 3
 
           # Readiness Probe (Перевірка, чи готовий обробляти запити)
           readinessProbe:
@@ -76,3 +88,4 @@ spec:
               port: 8000
             initialDelaySeconds: 5
             periodSeconds: 10
+            failureThreshold: 3
