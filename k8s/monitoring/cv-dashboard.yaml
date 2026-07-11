@@ -1,6 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: cv-api-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
   cv-api.json: |
     {
       "annotations": {
