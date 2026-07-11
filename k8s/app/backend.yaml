@@ -41,7 +41,9 @@ spec:
             requests:
               cpu: "100m"     # 10% ядра процесора
               memory: "128Mi" # 128 Мегабайт пам'яті
-          
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
           # Передаємо змінні середовища
           env:
             - name: DB_USER

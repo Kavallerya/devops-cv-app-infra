@@ -59,15 +59,38 @@ spec:
                   name: db-secret
                   key: database_password
             - name: PGDATA
-              value: "var/lib/postgres/data/pgdata"
+              value: "/var/lib/postgresql/data/pgdata"
           resources:
             requests:
-              cpu: "50m"     # 15% ядра
+              cpu: "50m"
               memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
 
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data/
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - admin
+                - -d
+                - cv_db
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - admin
+                - -d
+                - cv_db
+            initialDelaySeconds: 5
+            periodSeconds: 5
       volumes:
         - name: postgres-data
           persistentVolumeClaim:

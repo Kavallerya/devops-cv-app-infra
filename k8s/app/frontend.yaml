@@ -38,6 +38,9 @@ spec:
             requests:
               cpu: "50m"      # Всього 5% від одного ядра процесора!
               memory: "64Mi"  # 64 Мегабайти оперативки
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
           # Оскільки фронтенд (Nginx) дуже легкий, проби для нього простіші
           livenessProbe:
             httpGet:
@@ -45,3 +48,9 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5

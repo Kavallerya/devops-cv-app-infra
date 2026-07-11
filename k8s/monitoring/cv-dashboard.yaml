@@ -30,6 +30,10 @@ data:
       "links": [],
       "panels": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "mappings": [],
@@ -75,7 +79,7 @@ data:
           "pluginVersion": "10.4.1",
           "targets": [
             {
-              "expr": "sum(cv_api_requests_total)",
+              "expr": "sum(increase(http_requests_total[$__range]))",
               "legendFormat": "Total",
               "refId": "A"
             }
@@ -84,6 +88,10 @@ data:
           "type": "stat"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "mappings": [],
@@ -138,6 +146,10 @@ data:
           "type": "stat"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -213,8 +225,8 @@ data:
           },
           "targets": [
             {
-              "expr": "rate(cv_api_requests_total[5m])",
-              "legendFormat": "{{endpoint}} [{{method}}]",
+              "expr": "sum by (handler, method) (rate(http_requests_total[$__rate_interval]))",
+              "legendFormat": "{{handler}} [{{method}}]",
               "refId": "A"
             }
           ],
@@ -222,6 +234,10 @@ data:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -297,8 +313,8 @@ data:
           },
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, rate(cv_api_request_duration_seconds_bucket[5m]))",
-              "legendFormat": "p95 {{endpoint}}",
+              "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket[$__rate_interval])))",
+              "legendFormat": "p95 {{handler}}",
               "refId": "A"
             }
           ],
@@ -306,6 +322,10 @@ data:
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -381,15 +401,19 @@ data:
           },
           "targets": [
             {
-              "expr": "sum(rate(cv_api_requests_total{status_code!~\"2..\"}[5m])) / sum(rate(cv_api_requests_total[5m]))",
+              "expr": "sum(rate(http_requests_total{status=~\"5..\"}[$__rate_interval])) / sum(rate(http_requests_total[$__rate_interval])) or vector(0)",
               "legendFormat": "Error rate",
               "refId": "A"
             }
           ],
-          "title": "Error Rate (non-2xx)",
+          "title": "Error Rate (5xx)",
           "type": "timeseries"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -465,8 +489,8 @@ data:
           },
           "targets": [
             {
-              "expr": "sum by (status_code) (rate(cv_api_requests_total[5m]))",
-              "legendFormat": "{{status_code}}",
+              "expr": "sum by (status) (rate(http_requests_total[$__rate_interval]))",
+              "legendFormat": "{{status}}",
               "refId": "A"
             }
           ],
