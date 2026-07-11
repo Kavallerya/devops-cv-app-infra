@@ -137,7 +137,7 @@ data:
           "pluginVersion": "10.4.1",
           "targets": [
             {
-              "expr": "cv_visitors_total",
+              "expr": "sum(cv_visitors_total)",
               "legendFormat": "Visitors",
               "refId": "A"
             }
