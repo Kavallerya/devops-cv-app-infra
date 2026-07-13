@@ -1,10 +1,10 @@
 variable "project_id" {
-  description = "ID вашого проекту в Google Cloud"
+  description = "GCP project ID"
   type        = string
-  default     = "cv-k8s-prod" # Впишіть сюди ваш точний Project ID!
+  default     = "cv-k8s-prod"
 }
 
 variable "region" {
-  description = "Регіон розгортання"
-  default     = "europe-central2" # Варшава (найближчий до України)
+  description = "Deployment region"
+  default     = "europe-central2"
 }

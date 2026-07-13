@@ -8,21 +8,18 @@ spec:
   source:
     repoURL: 'https://kubernetes.github.io/ingress-nginx'
     chart: ingress-nginx
-    targetRevision: 4.10.1 # Стабільна версія
+    targetRevision: 4.10.1
     helm:
       valuesObject:
         controller:
-          # Вказуємо, що це буде публічний балансувальник
           service:
             type: LoadBalancer
             annotations:
-              # Просимо Google створити швидкий L4 Network Load Balancer
-              cloud.google.com/l4-ilb: "false" 
-          # Nginx сам збиратиме свої метрики для Графани
+              cloud.google.com/l4-ilb: "false"
           metrics:
             enabled: true
           admissionWebhooks:
-            enabled: false # Вимикаємо, щоб не було проблем з синхронізацією в ArgoCD
+            enabled: false
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: ingress-nginx

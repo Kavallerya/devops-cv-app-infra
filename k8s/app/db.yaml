@@ -1,5 +1,5 @@
 ---
-# 1. Створюємо ДИСК на 5 ГБ (аналог volumes: postgres_data)
+# Persistent Volume Claim
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -12,7 +12,7 @@ spec:
       storage: 5Gi
 
 ---
-# 2. Створюємо МЕРЕЖЕВЕ ІМ'Я (аналог hostname: db)
+# Internal Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -26,7 +26,7 @@ spec:
       targetPort: 5432
 
 ---
-# 3. Створюємо сам КОНТЕЙНЕР бази даних (аналог service: db)
+# Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,7 +55,7 @@ spec:
               value: "cv_db"
             - name: POSTGRES_PASSWORD
               valueFrom:
-                secretKeyRef: # Ось тут магія безпеки! Беремо пароль з Secret
+                secretKeyRef:
                   name: db-secret
                   key: database_password
             - name: PGDATA

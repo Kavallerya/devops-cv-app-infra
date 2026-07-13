@@ -7,13 +7,12 @@ spec:
   project: default
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
-    targetRevision: 2.10.2 # Актуальна стабільна версія чарту
+    targetRevision: 2.10.2
     chart: loki-stack
     helm:
       values: |
         loki:
           enabled: true
-          #  Жорсткі ліміти, щоб Loki не "з'їв" усю пам'ять на твоїх e2-standard-4
           resources:
             limits:
               memory: 512Mi
@@ -21,20 +20,19 @@ spec:
               cpu: 100m
               memory: 128Mi
           persistence:
-            enabled: false # Для портфоліо зберігаємо логи в оперативній пам'яті (без постійного диска)
+            enabled: false
         promtail:
           enabled: true
-          # Promtail теж обмежуємо
           resources:
             limits:
               memory: 256Mi
         grafana:
-          enabled: false # У нас вже є своя Графана з Dex
+          enabled: false
         prometheus:
-          enabled: false # Прометеус у нас теж уже є
+          enabled: false
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: monitoring # Розгортаємо туди ж, де лежить наш моніторинг
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true

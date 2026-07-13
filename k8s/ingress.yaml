@@ -4,11 +4,9 @@ metadata:
   name: cv-ingress
   annotations:
     argocd.argoproj.io/sync-wave: "5"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" 
-    # Анотацію gce ми видалили!
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
-  # Кажемо Кубернетесу віддати цей Ingress контролеру Nginx
-  ingressClassName: nginx 
+  ingressClassName: nginx
   tls:
   - hosts:
     - imorozov.xyz
@@ -18,9 +16,7 @@ spec:
   - host: imorozov.xyz
     http:
       paths:
-      # Змінюємо /* на /
       - path: /
-        # Змінюємо ImplementationSpecific на Prefix
         pathType: Prefix
         backend:
           service:
@@ -30,9 +26,7 @@ spec:
   - host: api.imorozov.xyz
     http:
       paths:
-        # Змінюємо /* на /
         - path: /
-          # Змінюємо ImplementationSpecific на Prefix
           pathType: Prefix
           backend:
             service:

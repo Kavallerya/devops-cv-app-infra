@@ -5,7 +5,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: admin@imorozov.xyz # Безлика корпоративна адреса
+    email: admin@imorozov.xyz
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:

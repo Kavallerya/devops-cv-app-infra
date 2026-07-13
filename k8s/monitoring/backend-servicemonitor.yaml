@@ -2,15 +2,13 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: backend-monitor
-  namespace: monitoring # <--- 1. ПЕРЕНОСИМО В НЕЙМСПЕЙС ПРОМЕТЕУСА
+  namespace: monitoring
   labels:
     release: monitoring
 spec:
-  # --- 2. ДОДАЄМО ВКАЗІВНИК НА НЕЙМСПЕЙС ДОДАТКА ---
   namespaceSelector:
     matchNames:
-      - default 
-  # ------------------------------------------------
+      - default
   selector:
     matchLabels:
       app: backend

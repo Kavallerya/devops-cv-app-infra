@@ -6,16 +6,16 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://charts.jetstack.io' # Офіційний репозиторій чартів
+    repoURL: 'https://charts.jetstack.io'
     chart: cert-manager
-    targetRevision: v1.14.0 # Стабільна ентерпрайз версія
+    targetRevision: v1.14.0
     helm:
       parameters:
         - name: installCRDs
-          value: "true" # КРИТИЧНО: вчить Кубернетес слову ClusterIssuer
+          value: "true"
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: cert-manager # Сам створить цей неймсейс
+    namespace: cert-manager
   syncPolicy:
     automated:
       prune: true

@@ -1,5 +1,4 @@
 ---
-# 1. СТВОРЮЄМО SERVICE (Внутрішній балансувальник)
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,11 +8,10 @@ spec:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80         # Порт сервісу
-      targetPort: 80   # Порт Nginx всередині контейнера
+      port: 80
+      targetPort: 80
 
 ---
-# 2. СТВОРЮЄМО DEPLOYMENT (Сам додаток)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,7 +34,6 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: frontend
-          # ВАЖЛИВО: Замініть на свій логін у DockerHub!
           image: kavallerya/cv-frontend:c01de9a8
           ports:
             - containerPort: 80
@@ -53,7 +50,6 @@ spec:
               exec:
                 command: ["sleep", "5"]
 
-          # Оскільки фронтенд (Nginx) дуже легкий, проби для нього простіші
           livenessProbe:
             httpGet:
               path: /

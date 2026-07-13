@@ -1,4 +1,4 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: monitoring # Явно створюємо район для метрик
+  name: monitoring
